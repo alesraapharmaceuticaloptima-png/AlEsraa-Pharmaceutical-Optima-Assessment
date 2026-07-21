@@ -25,6 +25,7 @@ const ADMIN_EMAIL = "alesraa.pharmaceutical.optima@gmail.com"; // <-- CHANGE THI
 // Base URL where you host index.html / results.html, no trailing slash.
 // Used to build the "view full results" link in the notification email.
 // e.g. "https://your-site.netlify.app"
+const SITE_URL = "https://alesraapharmaceuticaloptima-png.github.io/AlEsraa-Pharmaceutical-Optima-Assessment/";
 const SHEET_NAME = "Responses";
 
 const COLS = [
