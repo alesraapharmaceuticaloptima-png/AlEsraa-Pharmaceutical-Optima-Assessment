@@ -48,7 +48,7 @@ function renderResults(result, opts = {}) {
   const keyStrengthsLocalized = r.traits.filter(tr => tr.bandKey === "high").map(tr => traitNameLocalized(tr.traitIndex));
   const developmentAreasLocalized = r.traits.filter(tr => tr.bandKey === "low").map(tr => traitNameLocalized(tr.traitIndex));
   const recommendation = dept
-    ? buildRecommendation(langNow, deptNameLocalized, r.verdictLevel, keyStrengthsLocalized, developmentAreasLocalized, r.sjt.isBestPractice)
+    ? buildRecommendation(langNow, deptNameLocalized, r.verdictLevel, keyStrengthsLocalized, developmentAreasLocalized, r.sjts.isBestPractice)
     : r.recommendationEN;
 
   card.appendChild(el("div", { class: `callout callout-${r.verdictLevel}` }, [
@@ -83,17 +83,17 @@ function renderResults(result, opts = {}) {
   ]);
   wrap.appendChild(twoCol);
 
-  // ---- SJT note (only if not best-practice) ----
-  if (!r.sjt.isBestPractice) {
-    const sjtCard = el("div", { class: "callout callout-dev", style: "margin-top:20px;" }, [
-      el("div", { class: "callout-title" }, s("sjtAltTitle")),
-      el("p", { class: "callout-text" }, s("sjtAltText"))
+  // ---- sjts note (only if not best-practice) ----
+  if (!r.sjts.isBestPractice) {
+    const sjtsCard = el("div", { class: "callout callout-dev", style: "margin-top:20px;" }, [
+      el("div", { class: "callout-title" }, s("sjtsAltTitle")),
+      el("p", { class: "callout-text" }, s("sjtsAltText"))
     ]);
     if (audience === "recruiter") {
-      const chosenText = dept ? t(dept.sjt.options[r.sjt.chosenIndex]) : r.sjt.chosenTextEN;
-      sjtCard.appendChild(el("p", { class: "hint", style: "margin-top:8px;" }, `${s("responseGiven")} "${chosenText}"`));
+      const chosenText = dept ? t(dept.sjts.options[r.sjts.chosenIndex]) : r.sjts.chosenTextEN;
+      sjtsCard.appendChild(el("p", { class: "hint", style: "margin-top:8px;" }, `${s("responseGiven")} "${chosenText}"`));
     }
-    wrap.appendChild(sjtCard);
+    wrap.appendChild(sjtsCard);
   }
 
   wrap.appendChild(el("div", { class: "foot" },
