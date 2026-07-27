@@ -21,7 +21,6 @@
  *     as CONFIG.SCRIPT_URL (used by both index.html and results.html).
  */
 
-
 const ADMIN_EMAIL = "alesraa.pharmaceutical.optima@gmail.com"; // <-- CHANGE THIS
 // Base URL where you host index.html / results.html, no trailing slash.
 // Used to build the "view full results" link in the notification email.
@@ -37,6 +36,7 @@ const COLS = [
   "Trait 3", "Score 3", "Band 3",
   "Trait 4", "Score 4", "Band 4",
   "Trait 5", "Score 5", "Band 5",
+  "Trait 6", "Score 6", "Band 6",
   "SJT Answer", "SJT Best Practice",
   "Result JSON"
 ];
@@ -129,6 +129,7 @@ function appendRow_(sheet, r) {
     get(2, "nameEN"), get(2, "score"), get(2, "bandKey"),
     get(3, "nameEN"), get(3, "score"), get(3, "bandKey"),
     get(4, "nameEN"), get(4, "score"), get(4, "bandKey"),
+    get(5, "nameEN"), get(5, "score"), get(5, "bandKey"),
     r.sjt ? r.sjt.chosenTextEN : "",
     r.sjt ? (r.sjt.isBestPractice ? "Yes" : "No") : "",
     JSON.stringify(r)
@@ -194,7 +195,8 @@ function testSetup() {
       { traitIndex: 1, nameEN: "Assertiveness", score: 14, maxScore: 20, bandKey: "moderate" },
       { traitIndex: 2, nameEN: "Attention to Detail", score: 17, maxScore: 20, bandKey: "high" },
       { traitIndex: 3, nameEN: "Communication & Diplomacy", score: 12, maxScore: 20, bandKey: "moderate" },
-      { traitIndex: 4, nameEN: "Objectivity / Independent Judgment", score: 16, maxScore: 20, bandKey: "high" }
+      { traitIndex: 4, nameEN: "Objectivity / Independent Judgment", score: 16, maxScore: 20, bandKey: "high" },
+      { traitIndex: 5, nameEN: "Decision Making", score: 15, maxScore: 20, bandKey: "moderate" }
     ],
     sjt: { chosenIndex: 1, chosenTextEN: "Hold the release until the discrepancy is properly investigated and documented, per procedure.", isBestPractice: true },
     recommendationEN: "Test recommendation text."
