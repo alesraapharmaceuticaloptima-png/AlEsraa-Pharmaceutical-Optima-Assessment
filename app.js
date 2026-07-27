@@ -36,7 +36,7 @@ function buildQueue(dept) {
     });
   });
   const shuffled = shuffle(items);
-  shuffled.push({ type: "sjt", key: "sjt" });
+  shuffled.push({ type: "sjts", key: "sjts" });
   return shuffled;
 }
 
@@ -229,11 +229,11 @@ function renderTest() {
     });
     card.appendChild(likert);
   } else {
-    const sjt = state.dept.sjt;
+    const sjts = state.dept.sjts;
     card.appendChild(el("div", { class: "q-kicker" }, s("situationalJudgment")));
-    card.appendChild(el("p", { class: "q-text" }, t(sjt.question)));
+    card.appendChild(el("p", { class: "q-text" }, t(sjts.question)));
     const list = el("div", { class: "opt-list" });
-    sjt.options.forEach((opt, i) => {
+    sjts.options.forEach((opt, i) => {
       const letter = String.fromCharCode(97 + i);
       const selected = state.answers[q.key] === i;
       list.appendChild(el("button", {
