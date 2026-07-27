@@ -59,6 +59,16 @@ const DEPARTMENTS = [
           { text: { en: "I believe that staying calm in a crisis is more about experience than personality.", ar: "أعتقد أن الهدوء في الأزمات مرتبط بالخبرة أكثر من ارتباطه بالشخصية." }, reverse: true },
           { text: { en: "When someone questions my work, I take it as a sign that I need to be more careful next time rather than getting upset.", ar: "عندما يشكك أحدهم في عملي، أتعامل مع الأمر كإشارة إلى ضرورة توخي مزيد من الحذر في المرة القادمة بدلاً من الانزعاج." }, reverse: false }
         ]
+      },
+      {
+        name: { en: "Decision Making", ar: "اتخاذ القرار" },
+        definition: { en: "Makes fast, firm calls under pressure rather than deliberating or deferring.", ar: "يتخذ قرارات سريعة وحاسمة تحت الضغط بدلاً من التردد أو التأجيل." },
+        items: [
+          { text: { en: "When a result is borderline, I'd rather wait for a second opinion than decide on the spot.", ar: "عندما تكون النتيجة حدّية، أفضّل الانتظار لرأي ثانٍ بدلاً من اتخاذ القرار في الحال." }, reverse: true },
+          { text: { en: "I sometimes delay flagging an issue because I'm not fully sure yet.", ar: "أؤجل أحيانًا الإبلاغ عن مشكلة لأنني لست متأكدًا تمامًا بعد." }, reverse: true },
+          { text: { en: "Once I have enough information to act, I act immediately rather than reviewing it again.", ar: "بمجرد أن تتوفر لدي معلومات كافية للتصرف، أتصرف فورًا بدلاً من مراجعتها مرة أخرى." }, reverse: false },
+          { text: { en: "I find it hard to commit to a decision when I know it will be unpopular with the team.", ar: "أجد صعوبة في الالتزام بقرار عندما أعلم أنه لن يحظى بشعبية لدى الفريق." }, reverse: true }
+        ]
       }
     ],
     sjt: {
@@ -131,6 +141,16 @@ const DEPARTMENTS = [
           { text: { en: "If a deviation is very minor, it usually isn't worth the time to write it down formally.", ar: "إذا كان الانحراف طفيفًا جدًا، فعادةً لا يستحق الوقت اللازم لتوثيقه رسميًا." }, reverse: true },
           { text: { en: "I find keeping thorough, well-organized records to be a tedious and unnecessary burden.", ar: "أجد أن الاحتفاظ بسجلات شاملة ومنظمة جيدًا عبء مملّ وغير ضروري." }, reverse: true },
           { text: { en: "My protocols and raw data are always ready to withstand an audit.", ar: "بروتوكولاتي وبياناتي الخام جاهزة دائمًا لتحمّل أي عملية تدقيق." }, reverse: false }
+        ]
+      },
+      {
+        name: { en: "Planning & Organizing", ar: "التخطيط والتنظيم" },
+        definition: { en: "Structures work and prioritizes competing deadlines without losing track of long-running studies.", ar: "ينظم عمله ويرتب أولوياته بين مواعيد متعارضة دون أن يفقد تتبع الدراسات طويلة الأمد." },
+        items: [
+          { text: { en: "When several study deadlines land in the same week, I struggle to decide what to tackle first.", ar: "عندما تتزامن عدة مواعيد نهائية لدراسات في نفس الأسبوع، أجد صعوبة في تحديد ما يجب البدء به أولاً." }, reverse: true },
+          { text: { en: "I keep a clear system for tracking which samples are due at which interval.", ar: "أحتفظ بنظام واضح لتتبع العينات المستحقة في كل فترة زمنية." }, reverse: false },
+          { text: { en: "Unexpected requests tend to derail my planned schedule for the week.", ar: "تميل الطلبات غير المتوقعة إلى تعطيل جدولي المخطط للأسبوع." }, reverse: true },
+          { text: { en: "I sometimes realize a deadline is close only at the last minute.", ar: "أدرك أحيانًا أن موعدًا نهائيًا قد اقترب في اللحظة الأخيرة فقط." }, reverse: true }
         ]
       }
     ],
@@ -205,6 +225,16 @@ const DEPARTMENTS = [
           { text: { en: "If a potential contamination source seems minor, I usually don't bother flagging it.", ar: "إذا بدا مصدر التلوث المحتمل بسيطًا، فعادةً لا أكلّف نفسي بالإبلاغ عنه." }, reverse: true },
           { text: { en: "I treat every sample as if contamination risk is real, not just theoretical.", ar: "أتعامل مع كل عينة وكأن خطر التلوث حقيقي وليس نظريًا فقط." }, reverse: false }
         ]
+      },
+      {
+        name: { en: "Complying", ar: "الامتثال" },
+        definition: { en: "Follows compliance and regulatory requirements consistently, even when no one is checking.", ar: "يلتزم بمتطلبات الامتثال التنظيمية باستمرار، حتى عندما لا يراقبه أحد." },
+        items: [
+          { text: { en: "If a documented requirement seems excessive for a low-risk sample, I sometimes simplify it.", ar: "إذا بدا أحد المتطلبات الموثقة مبالغًا فيه لعينة منخفضة المخاطر، أُبسّطه أحيانًا." }, reverse: true },
+          { text: { en: "I report a compliance gap even when I'm the only one who would ever know about it.", ar: "أُبلغ عن أي ثغرة في الامتثال حتى عندما أكون الوحيد الذي قد يعلم بها." }, reverse: false },
+          { text: { en: "Audits make me anxious because I'm not always sure my records are complete.", ar: "تجعلني عمليات التدقيق قلقًا لأنني لست متأكدًا دائمًا من اكتمال سجلاتي." }, reverse: true },
+          { text: { en: "I treat every regulatory requirement as necessary, even the ones that seem redundant.", ar: "أتعامل مع كل متطلب تنظيمي كأنه ضروري، حتى تلك التي تبدو زائدة عن الحاجة." }, reverse: false }
+        ]
       }
     ],
     sjt: {
@@ -277,6 +307,16 @@ const DEPARTMENTS = [
           { text: { en: "When equipment breaks down mid-shift, I tend to panic rather than adjusting my approach.", ar: "عندما تتعطل المعدات في منتصف الوردية، أميل إلى الذعر بدلاً من تعديل أسلوبي." }, reverse: true },
           { text: { en: "I find it difficult to switch between tasks smoothly when the line requires it.", ar: "أجد صعوبة في التنقل بسلاسة بين المهام عندما يتطلب خط الإنتاج ذلك." }, reverse: true },
           { text: { en: "I stay productive even when priorities shift during a shift.", ar: "أظل منتجًا حتى عندما تتغير الأولويات أثناء الوردية." }, reverse: false }
+        ]
+      },
+      {
+        name: { en: "Delivering Results", ar: "إيصال النتائج" },
+        definition: { en: "Consistently meets output and quality targets, and follows through on commitments.", ar: "يحقق باستمرار أهداف الإنتاج والجودة، وينفذ التزاماته حتى النهاية." },
+        items: [
+          { text: { en: "When a shift target looks unreachable, I tend to accept a lower result rather than push harder.", ar: "عندما يبدو هدف الوردية بعيد المنال، أميل إلى قبول نتيجة أقل بدلاً من بذل جهد أكبر." }, reverse: true },
+          { text: { en: "I follow through on a commitment even after the person who asked for it has forgotten about it.", ar: "أنفذ التزامي حتى بعد أن ينسى الشخص الذي طلبه." }, reverse: false },
+          { text: { en: "I sometimes let a task slip if nobody follows up on it.", ar: "أترك أحيانًا مهمة تتأخر إذا لم يتابعها أحد." }, reverse: true },
+          { text: { en: "I take personal responsibility for hitting my shift's targets, not just doing my part.", ar: "أتحمّل مسؤولية شخصية عن تحقيق أهداف ورديتي، وليس فقط أداء دوري." }, reverse: false }
         ]
       }
     ],
@@ -351,6 +391,16 @@ const DEPARTMENTS = [
           { text: { en: "I prefer to wait for someone else to take the first step on a project.", ar: "أفضّل الانتظار حتى يتخذ شخص آخر الخطوة الأولى في المشروع." }, reverse: true },
           { text: { en: "I look for opportunities to improve a process even when no one has asked me to.", ar: "أبحث عن فرص لتحسين العملية حتى عندما لا يطلب مني أحد ذلك." }, reverse: false }
         ]
+      },
+      {
+        name: { en: "Decision Making", ar: "اتخاذ القرار" },
+        definition: { en: "Commits to a data-backed course of action quickly rather than over-deliberating.", ar: "يلتزم بمسار عمل مدعوم بالبيانات بسرعة بدلاً من الإفراط في التداول." },
+        items: [
+          { text: { en: "Even with strong supporting data, I like to run more analysis before recommending a change.", ar: "حتى مع وجود بيانات داعمة قوية، أحب إجراء المزيد من التحليل قبل التوصية بتغيير." }, reverse: true },
+          { text: { en: "I hesitate to propose a change if I expect resistance from the team.", ar: "أتردد في اقتراح تغيير إذا كنت أتوقع مقاومة من الفريق." }, reverse: true },
+          { text: { en: "Once the data is clear, I move to a pilot quickly rather than waiting for full consensus.", ar: "بمجرد وضوح البيانات، أنتقل إلى التجربة بسرعة بدلاً من انتظار الإجماع الكامل." }, reverse: false },
+          { text: { en: "I tend to revisit a decision multiple times even after I've committed to it.", ar: "أميل إلى إعادة النظر في قرار عدة مرات حتى بعد أن ألتزم به." }, reverse: true }
+        ]
       }
     ],
     sjt: {
@@ -424,6 +474,16 @@ const DEPARTMENTS = [
           { text: { en: "I find it difficult to set aside my personal opinions when evaluating compliance.", ar: "أجد صعوبة في وضع آرائي الشخصية جانبًا عند تقييم الالتزام." }, reverse: true },
           { text: { en: "I base my decisions on the evidence in front of me rather than on who is asking.", ar: "أبني قراراتي على الأدلة المتاحة أمامي وليس على هوية الشخص الذي يطلب." }, reverse: false }
         ]
+      },
+      {
+        name: { en: "Decision Making", ar: "اتخاذ القرار" },
+        definition: { en: "Makes and holds firm compliance calls quickly, without deferring under pressure.", ar: "يتخذ قرارات الامتثال ويثبت عليها بسرعة، دون التراجع تحت الضغط." },
+        items: [
+          { text: { en: "When a batch decision is urgent, I still prefer to sleep on it before deciding.", ar: "عندما يكون قرار التشغيلة عاجلاً، ما زلت أفضّل التفكير فيه ليلة قبل أن أقرر." }, reverse: true },
+          { text: { en: "I sometimes delay a rejection decision hoping the issue resolves itself.", ar: "أؤجل أحيانًا قرار الرفض على أمل أن تُحل المشكلة من تلقاء نفسها." }, reverse: true },
+          { text: { en: "Once I've reviewed the evidence, I give my decision without unnecessary delay.", ar: "بمجرد مراجعتي للأدلة، أعطي قراري دون تأخير غير ضروري." }, reverse: false },
+          { text: { en: "If I expect pushback from production, I tend to wait for someone else to make the call.", ar: "إذا كنت أتوقع اعتراضًا من الإنتاج، أميل إلى الانتظار حتى يتخذ شخص آخر القرار." }, reverse: true }
+        ]
       }
     ],
     sjt: {
@@ -496,6 +556,16 @@ const DEPARTMENTS = [
           { text: { en: "I prefer to work in isolation rather than actively seeking input from colleagues.", ar: "أفضّل العمل بمعزل عن الآخرين بدلاً من السعي النشط للحصول على آراء الزملاء." }, reverse: true },
           { text: { en: "I find it frustrating to rework my approach based on feedback from others.", ar: "أجد أنه من المحبط إعادة صياغة أسلوبي بناءً على ملاحظات الآخرين." }, reverse: true },
           { text: { en: "I keep pushing on a difficult formulation problem over weeks or months.", ar: "أواصل العمل على مشكلة تركيب صعبة على مدى أسابيع أو أشهر." }, reverse: false }
+        ]
+      },
+      {
+        name: { en: "Independence", ar: "الاستقلالية" },
+        definition: { en: "Forms and defends own scientific judgment, even without close supervision or when it conflicts with consensus.", ar: "يكوّن حكمه العلمي الخاص ويدافع عنه، حتى دون إشراف مباشر أو عندما يتعارض مع الإجماع." },
+        items: [
+          { text: { en: "I prefer to have a supervisor confirm my interpretation before I commit to it.", ar: "أفضّل أن يؤكد المشرف تفسيري قبل أن ألتزم به." }, reverse: true },
+          { text: { en: "When my data suggests a different conclusion than the team expects, I say so clearly.", ar: "عندما تشير بياناتي إلى استنتاج مختلف عمّا يتوقعه الفريق، أُعبّر عن ذلك بوضوح." }, reverse: false },
+          { text: { en: "I feel uneasy making a judgment call when there's no one senior available to check with.", ar: "أشعر بعدم الارتياح عند اتخاذ قرار تقييمي عندما لا يتوفر شخص أعلى مرتبة لاستشارته." }, reverse: true },
+          { text: { en: "I've pursued a line of experimentation my supervisor was skeptical about, because I believed in it.", ar: "تابعت خط تجارب كان مشرفي متشككًا فيه، لأنني كنت مؤمنًا به." }, reverse: false }
         ]
       }
     ],
