@@ -36,7 +36,9 @@ function buildQueue(dept) {
     });
   });
   const shuffled = shuffle(items);
-  shuffled.push({ type: "sjts", key: "sjts" });
+  dept.sjts.forEach((sjt, sIdx) => {
+    shuffled.push({ type: "sjt", key: `sjt${sIdx}`, sjtIndex: sIdx });
+  });
   return shuffled;
 }
 
@@ -229,11 +231,11 @@ function renderTest() {
     });
     card.appendChild(likert);
   } else {
-    const sjts = state.dept.sjts;
+    const sjt = state.dept.sjts[q.sjtIndex];
     card.appendChild(el("div", { class: "q-kicker" }, s("situationalJudgment")));
-    card.appendChild(el("p", { class: "q-text" }, t(sjts.question)));
+    card.appendChild(el("p", { class: "q-text" }, t(sjt.question)));
     const list = el("div", { class: "opt-list" });
-    sjts.options.forEach((opt, i) => {
+    sjt.options.forEach((opt, i) => {
       const letter = String.fromCharCode(97 + i);
       const selected = state.answers[q.key] === i;
       list.appendChild(el("button", {
