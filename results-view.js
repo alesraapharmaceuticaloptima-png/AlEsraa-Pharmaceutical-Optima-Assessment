@@ -48,7 +48,7 @@ function renderResults(result, opts = {}) {
   const keyStrengthsLocalized = r.traits.filter(tr => tr.bandKey === "high").map(tr => traitNameLocalized(tr.traitIndex));
   const developmentAreasLocalized = r.traits.filter(tr => tr.bandKey === "low").map(tr => traitNameLocalized(tr.traitIndex));
   const recommendation = dept
-    ? buildRecommendation(langNow, deptNameLocalized, r.verdictLevel, keyStrengthsLocalized, developmentAreasLocalized, r.sjts.isBestPractice)
+    ? buildRecommendation(langNow, deptNameLocalized, r.verdictLevel, keyStrengthsLocalized, developmentAreasLocalized, r.sjtAllBestPractice)
     : r.recommendationEN;
 
   card.appendChild(el("div", { class: `callout callout-${r.verdictLevel}` }, [
@@ -83,17 +83,21 @@ function renderResults(result, opts = {}) {
   ]);
   wrap.appendChild(twoCol);
 
-  // ---- sjts note (only if not best-practice) ----
-  if (!r.sjts.isBestPractice) {
-    const sjtsCard = el("div", { class: "callout callout-dev", style: "margin-top:20px;" }, [
-      el("div", { class: "callout-title" }, s("sjtsAltTitle")),
-      el("p", { class: "callout-text" }, s("sjtsAltText"))
+  // ---- SJT note (only if at least one scenario wasn't best-practice) ----
+  if (!r.sjtAllBestPractice) {
+    const sjtCard = el("div", { class: "callout callout-dev", style: "margin-top:20px;" }, [
+      el("div", { class: "callout-title" }, s("sjtAltTitle")),
+      el("p", { class: "callout-text" }, `${s("sjtAltText")} (${r.sjtBestPracticeCount}/${r.sjtTotal})`)
     ]);
     if (audience === "recruiter") {
-      const chosenText = dept ? t(dept.sjts.options[r.sjts.chosenIndex]) : r.sjts.chosenTextEN;
-      sjtsCard.appendChild(el("p", { class: "hint", style: "margin-top:8px;" }, `${s("responseGiven")} "${chosenText}"`));
+      r.sjts.filter(sr => !sr.isBestPractice).forEach(sr => {
+        const scenario = dept ? dept.sjts[sr.sjtIndex] : null;
+        const questionText = scenario ? t(scenario.question) : sr.questionEN;
+        const chosenText = (scenario && scenario.options[sr.chosenIndex]) ? t(scenario.options[sr.chosenIndex]) : sr.chosenTextEN;
+        sjtCard.appendChild(el("p", { class: "hint", style: "margin-top:8px;" }, `${questionText} — ${s("responseGiven")} "${chosenText}"`));
+      });
     }
-    wrap.appendChild(sjtsCard);
+    wrap.appendChild(sjtCard);
   }
 
   wrap.appendChild(el("div", { class: "foot" },
