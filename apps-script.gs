@@ -37,7 +37,9 @@ const COLS = [
   "Trait 4", "Score 4", "Band 4",
   "Trait 5", "Score 5", "Band 5",
   "Trait 6", "Score 6", "Band 6",
-  "SJT Answer", "SJT Best Practice",
+  "SJT1 Answer", "SJT1 Best Practice",
+  "SJT2 Answer", "SJT2 Best Practice",
+  "SJT3 Answer", "SJT3 Best Practice",
   "Result JSON"
 ];
 
@@ -115,6 +117,8 @@ function findRowById_(id) {
 function appendRow_(sheet, r) {
   const t = r.traits || [];
   const get = (i, key) => (t[i] ? t[i][key] : "");
+  const sj = r.sjts || [];
+  const sjGet = (i, key) => (sj[i] ? sj[i][key] : "");
   sheet.appendRow([
     r.timestamp || new Date().toISOString(),
     r.id || Utilities.getUuid(),
@@ -130,8 +134,9 @@ function appendRow_(sheet, r) {
     get(3, "nameEN"), get(3, "score"), get(3, "bandKey"),
     get(4, "nameEN"), get(4, "score"), get(4, "bandKey"),
     get(5, "nameEN"), get(5, "score"), get(5, "bandKey"),
-    r.sjt ? r.sjt.chosenTextEN : "",
-    r.sjt ? (r.sjt.isBestPractice ? "Yes" : "No") : "",
+    sjGet(0, "chosenTextEN"), sjGet(0, "isBestPractice") ? "Yes" : (sj[0] ? "No" : ""),
+    sjGet(1, "chosenTextEN"), sjGet(1, "isBestPractice") ? "Yes" : (sj[1] ? "No" : ""),
+    sjGet(2, "chosenTextEN"), sjGet(2, "isBestPractice") ? "Yes" : (sj[2] ? "No" : ""),
     JSON.stringify(r)
   ]);
 }
@@ -139,6 +144,9 @@ function appendRow_(sheet, r) {
 function sendEmail_(r) {
   const c = r.candidate || {};
   const traitLines = (r.traits || []).map(t => `  • ${t.nameEN}: ${t.score}/20 (${capitalize_(t.bandKey)})`).join("\n");
+  const sjtLines = (r.sjts || []).map((sj, i) =>
+    `  • Scenario ${i + 1}: "${sj.chosenTextEN}" — ${sj.isBestPractice ? "Best practice" : "Alternative response"}`
+  ).join("\n");
   const link = (SITE_URL && SITE_URL.indexOf("PASTE_YOUR") !== 0)
     ? `${SITE_URL}/results.html?id=${encodeURIComponent(r.id)}`
     : null;
@@ -159,8 +167,8 @@ Overall match: ${r.overallPercent}% — ${capitalize_(r.verdictLevel)} fit
 Trait scores:
 ${traitLines}
 
-Situational judgment response: ${r.sjt ? r.sjt.chosenTextEN : ""}
-Matches recommended best practice: ${r.sjt && r.sjt.isBestPractice ? "Yes" : "No"}
+Situational judgment responses (${r.sjtBestPracticeCount || 0}/${r.sjtTotal || 0} best practice):
+${sjtLines}
 ${link ? `\nView the full formatted results page (candidate's language, or switch to English/Arabic on the page):\n${link}\n` : "\n(Set SITE_URL in this script to include a direct link here.)\n"}
 All submissions are also stored in the "${SHEET_NAME}" sheet:
 ${SpreadsheetApp.getActiveSpreadsheet().getUrl()}
@@ -198,7 +206,13 @@ function testSetup() {
       { traitIndex: 4, nameEN: "Objectivity / Independent Judgment", score: 16, maxScore: 20, bandKey: "high" },
       { traitIndex: 5, nameEN: "Decision Making", score: 15, maxScore: 20, bandKey: "moderate" }
     ],
-    sjt: { chosenIndex: 1, chosenTextEN: "Hold the release until the discrepancy is properly investigated and documented, per procedure.", isBestPractice: true },
+    sjts: [
+      { sjtIndex: 0, questionEN: "Sample scenario 1", chosenIndex: 1, chosenTextEN: "Hold the release until the discrepancy is properly investigated and documented, per procedure.", isBestPractice: true },
+      { sjtIndex: 1, questionEN: "Sample scenario 2", chosenIndex: 1, chosenTextEN: "Classify it under the more conservative SOP reading and document the reasoning.", isBestPractice: true },
+      { sjtIndex: 2, questionEN: "Sample scenario 3", chosenIndex: 1, chosenTextEN: "Apply the same standard process regardless of the friendship.", isBestPractice: true }
+    ],
+    sjtBestPracticeCount: 3,
+    sjtTotal: 3,
     recommendationEN: "Test recommendation text."
   };
   const out = doPost({ postData: { contents: JSON.stringify({ action: "submit", result }) } });
