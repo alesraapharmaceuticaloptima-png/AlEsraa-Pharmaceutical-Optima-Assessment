@@ -47,8 +47,9 @@ function renderResults(result, opts = {}) {
   const traitNameLocalized = (traitIndex) => dept ? t(dept.traits[traitIndex].name) : "";
   const keyStrengthsLocalized = r.traits.filter(tr => tr.bandKey === "high").map(tr => traitNameLocalized(tr.traitIndex));
   const developmentAreasLocalized = r.traits.filter(tr => tr.bandKey === "low").map(tr => traitNameLocalized(tr.traitIndex));
+  const sjtInfo = { allBestPractice: r.sjtAllBestPractice, capped: r.sjtCapped, count: r.sjtBestPracticeCount, total: r.sjtTotal };
   const recommendation = dept
-    ? buildRecommendation(langNow, deptNameLocalized, r.verdictLevel, keyStrengthsLocalized, developmentAreasLocalized, r.sjtAllBestPractice)
+    ? buildRecommendation(langNow, deptNameLocalized, r.verdictLevel, keyStrengthsLocalized, developmentAreasLocalized, sjtInfo)
     : r.recommendationEN;
 
   card.appendChild(el("div", { class: `callout callout-${r.verdictLevel}` }, [
@@ -87,7 +88,8 @@ function renderResults(result, opts = {}) {
   if (!r.sjtAllBestPractice) {
     const sjtCard = el("div", { class: "callout callout-dev", style: "margin-top:20px;" }, [
       el("div", { class: "callout-title" }, s("sjtAltTitle")),
-      el("p", { class: "callout-text" }, `${s("sjtAltText")} (${r.sjtBestPracticeCount}/${r.sjtTotal})`)
+      el("p", { class: "callout-text" }, `${s("sjtAltText")} (${r.sjtBestPracticeCount}/${r.sjtTotal})` +
+        (r.sjtCapped ? (getLang() === "ar" ? " — أثّر ذلك على التقييم الإجمالي." : " — this capped the overall verdict.") : ""))
     ]);
     if (audience === "recruiter") {
       r.sjts.filter(sr => !sr.isBestPractice).forEach(sr => {
