@@ -6,7 +6,7 @@
 const CONFIG = {
   // Paste your deployed Google Apps Script Web App URL here (ends in /exec).
   // See SETUP.md.
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyZdwgD7_3tq3T2u964raa8IC9OYMELlEqcslfRl6UF7rW0_tXW6olJmz6-EJEmbEHO0w/exec",
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwMkQw2cFkjawMI-aYMyJbiWLpFVIL1tQNFZh5jGu92fWhqE1oiDrD-wcr4S28wszxFZg/exec",
   COMPANY_NAME: { en: "ALESRAA Pharmaceuticals", ar: "الإسراء للأدوية" },
   DEFAULT_LANG: "en"
 };
