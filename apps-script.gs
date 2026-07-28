@@ -30,7 +30,7 @@ const SHEET_NAME = "Responses";
 
 const COLS = [
   "Timestamp", "SubmissionID", "Name", "Email", "Phone", "Department", "Language",
-  "Overall %", "Verdict Level",
+  "Overall %", "Verdict Level", "Verdict Capped by SJT",
   "Trait 1", "Score 1", "Band 1",
   "Trait 2", "Score 2", "Band 2",
   "Trait 3", "Score 3", "Band 3",
@@ -127,7 +127,7 @@ function appendRow_(sheet, r) {
     r.candidate.phone || "",
     r.departmentNameEN || "",
     r.lang || "en",
-    r.overallPercent, r.verdictLevel,
+    r.overallPercent, r.verdictLevel, r.sjtCapped ? "Yes" : "No",
     get(0, "nameEN"), get(0, "score"), get(0, "bandKey"),
     get(1, "nameEN"), get(1, "score"), get(1, "bandKey"),
     get(2, "nameEN"), get(2, "score"), get(2, "bandKey"),
@@ -162,7 +162,7 @@ Role applied for: ${r.departmentNameEN || ""}
 Language taken in: ${(r.lang || "en").toUpperCase()}
 Submitted: ${r.timestamp || ""}
 
-Overall match: ${r.overallPercent}% — ${capitalize_(r.verdictLevel)} fit
+Overall match: ${r.overallPercent}% — ${capitalize_(r.verdictLevel)} fit${r.sjtCapped ? " (capped down from the trait-based score due to situational-judgment performance)" : ""}
 
 Trait scores:
 ${traitLines}
