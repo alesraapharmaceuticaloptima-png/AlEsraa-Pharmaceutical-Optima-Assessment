@@ -7,20 +7,33 @@
 // re-scoring.
 //
 // The per-trait Low/Moderate/High bands (4–9 / 10–15 / 16–20)
-// come directly from the assessment battery's scoring guide.
+// come directly from the assessment battery's scoring guide and
+// are left untouched.
+//
 // The overall "match %" and fit verdict are NOT specified in
-// that document (it only defines per-trait bands) — this is a
-// straightforward, documented composite built on top of it:
+// that document — this is a composite built on top of it:
 // overall % = total points earned / total points possible
-// across the role's 5 traits. Adjust OVERALL_BANDS below if
-// you want different thresholds or labels.
+// across the role's traits. Adjust OVERALL_BANDS below if you
+// want different thresholds or labels.
+//
+// v3: bar raised. Thresholds are tighter (a merely "acceptable"
+// trait profile no longer reads as Strong Fit), and — new — the
+// verdict is now gated by situational-judgment performance: no
+// matter how strong the trait scores are, getting a majority of
+// the SJT scenarios wrong caps the verdict at "Below Target Fit",
+// and missing even one scenario blocks "Strong Fit" outright. In
+// a pharma production context, the judgment-call scenarios are
+// exactly what predicts real on-the-job risk, so they're no
+// longer just a footnote — they can override the trait composite.
 // ============================================================
 
 const OVERALL_BANDS = [
-  { min: 75, level: "strong" },
-  { min: 55, level: "moderate" },
+  { min: 85, level: "strong" },
+  { min: 68, level: "moderate" },
   { min: 0, level: "below" }
 ];
+
+const LEVEL_ORDER = ["below", "moderate", "strong"];
 
 function traitBandKey(score) {
   if (score <= 9) return "low";
@@ -30,6 +43,24 @@ function traitBandKey(score) {
 
 function overallLevel(pct) {
   return OVERALL_BANDS.find(b => pct >= b.min).level;
+}
+
+// Caps the verdict based on SJT performance: <50% correct caps at
+// "below"; anything short of a clean sweep caps at "moderate";
+// only a perfect score leaves the trait-based verdict uncapped.
+function sjtCapLevel(bestPracticeCount, total) {
+  if (!total) return "strong"; // no SJT data — don't cap
+  const fraction = bestPracticeCount / total;
+  if (fraction < 0.5) return "below";
+  if (fraction < 1) return "moderate";
+  return "strong";
+}
+
+function applySjtGate(rawLevel, bestPracticeCount, total) {
+  const cap = sjtCapLevel(bestPracticeCount, total);
+  const rawRank = LEVEL_ORDER.indexOf(rawLevel);
+  const capRank = LEVEL_ORDER.indexOf(cap);
+  return LEVEL_ORDER[Math.min(rawRank, capRank)];
 }
 
 // Bilingual "N and M" / "N, M, and P" list joiner.
@@ -48,7 +79,12 @@ function listJoin(arr, lang) {
  * language-neutral result data. deptName/keyStrengths/developmentAreas
  * are already-localized strings (resolved by the caller via t()).
  */
-function buildRecommendation(lang, deptName, verdictLevel, keyStrengths, developmentAreas, sjtOk) {
+function buildRecommendation(lang, deptName, verdictLevel, keyStrengths, developmentAreas, sjtInfo) {
+  sjtInfo = sjtInfo || {};
+  const allBestPractice = sjtInfo.allBestPractice !== false; // default true if not provided
+  const capped = !!sjtInfo.capped;
+  const count = sjtInfo.count;
+  const total = sjtInfo.total;
   let text;
   if (lang === "ar") {
     if (verdictLevel === "strong") {
@@ -63,8 +99,12 @@ function buildRecommendation(lang, deptName, verdictLevel, keyStrengths, develop
         ` يُنصح بالنظر في وظائف بديلة أو مناقشة مجالات التطوير أثناء المقابلة.` +
         (developmentAreas.length ? ` يُنصح بالانتباه بشكل خاص إلى ${listJoin(developmentAreas, lang)}.` : "");
     }
-    if (!sjtOk) {
-      text += ` ملاحظة: تشير إحدى إجابات تقييم الموقف (أو أكثر) إلى وجود فجوة محتملة في اتخاذ القرار الخاص بهذه الوظيفة — يُنصح بمناقشة إجابات السيناريوهات مباشرة أثناء المقابلة.`;
+    if (!allBestPractice) {
+      text += ` ملاحظة: ${count}/${total} من إجابات تقييم الموقف طابقت الممارسة الفضلى الموصى بها.`;
+      if (capped) {
+        text += ` أثّر ذلك على التقييم الإجمالي، الذي كان سيعكس فئة ملاءمة أعلى استنادًا إلى درجات السمات وحدها.`;
+      }
+      text += ` يُنصح بمناقشة إجابات السيناريوهات مباشرة أثناء المقابلة.`;
     }
   } else {
     if (verdictLevel === "strong") {
@@ -79,8 +119,12 @@ function buildRecommendation(lang, deptName, verdictLevel, keyStrengths, develop
         ` Consider alternative positions or discuss development areas in interview.` +
         (developmentAreas.length ? ` Particular attention to ${listJoin(developmentAreas, lang)} is recommended.` : "");
     }
-    if (!sjtOk) {
-      text += ` Note: one or more situational-judgment responses indicate a potential gap in role-specific decision-making — discuss the scenario responses directly in interview.`;
+    if (!allBestPractice) {
+      text += ` Note: ${count}/${total} situational-judgment responses matched the recommended best-practice answer.`;
+      if (capped) {
+        text += ` This capped the overall verdict, which would otherwise reflect a higher-tier fit based on trait scores alone.`;
+      }
+      text += ` Discuss the scenario responses directly in interview.`;
     }
   }
   return text;
@@ -109,7 +153,7 @@ function buildResult(dept, candidate, answers, queue, lang) {
   const totalScore = traitSums.reduce((a, b) => a + b, 0);
   const maxTotal = dept.traits.length * 20;
   const overallPercent = Math.round((totalScore / maxTotal) * 100);
-  const verdictLevel = overallLevel(overallPercent);
+  const rawVerdictLevel = overallLevel(overallPercent);
 
   const keyStrengthsEN = traits.filter(tr => tr.bandKey === "high").map(tr => tr.nameEN);
   const developmentAreasEN = traits.filter(tr => tr.bandKey === "low").map(tr => tr.nameEN);
@@ -128,7 +172,11 @@ function buildResult(dept, candidate, answers, queue, lang) {
   const sjtTotal = sjtResults.length;
   const sjtAllBestPractice = sjtBestPracticeCount === sjtTotal;
 
-  const recommendationEN = buildRecommendation("en", dept.name.en, verdictLevel, keyStrengthsEN, developmentAreasEN, sjtAllBestPractice);
+  const verdictLevel = applySjtGate(rawVerdictLevel, sjtBestPracticeCount, sjtTotal);
+  const sjtCapped = verdictLevel !== rawVerdictLevel;
+
+  const sjtInfo = { allBestPractice: sjtAllBestPractice, capped: sjtCapped, count: sjtBestPracticeCount, total: sjtTotal };
+  const recommendationEN = buildRecommendation("en", dept.name.en, verdictLevel, keyStrengthsEN, developmentAreasEN, sjtInfo);
 
   const rawResponses = queue.map(q => {
     if (q.type === "likert") {
@@ -147,6 +195,7 @@ function buildResult(dept, candidate, answers, queue, lang) {
     departmentNameEN: dept.name.en,
     overallPercent,
     verdictLevel,
+    rawVerdictLevel,
     traits,
     keyStrengthsEN,
     developmentAreasEN,
@@ -154,6 +203,7 @@ function buildResult(dept, candidate, answers, queue, lang) {
     sjtBestPracticeCount,
     sjtTotal,
     sjtAllBestPractice,
+    sjtCapped,
     recommendationEN,
     rawResponses
   };
