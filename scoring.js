@@ -48,7 +48,7 @@ function listJoin(arr, lang) {
  * language-neutral result data. deptName/keyStrengths/developmentAreas
  * are already-localized strings (resolved by the caller via t()).
  */
-function buildRecommendation(lang, deptName, verdictLevel, keyStrengths, developmentAreas, sjtsOk) {
+function buildRecommendation(lang, deptName, verdictLevel, keyStrengths, developmentAreas, sjtOk) {
   let text;
   if (lang === "ar") {
     if (verdictLevel === "strong") {
@@ -63,8 +63,8 @@ function buildRecommendation(lang, deptName, verdictLevel, keyStrengths, develop
         ` يُنصح بالنظر في وظائف بديلة أو مناقشة مجالات التطوير أثناء المقابلة.` +
         (developmentAreas.length ? ` يُنصح بالانتباه بشكل خاص إلى ${listJoin(developmentAreas, lang)}.` : "");
     }
-    if (!sjtsOk) {
-      text += ` ملاحظة: يشير تقييم الموقف إلى وجود فجوة محتملة في اتخاذ القرار الخاص بهذه الوظيفة — يُنصح بمناقشة إجابة السيناريو مباشرة أثناء المقابلة.`;
+    if (!sjtOk) {
+      text += ` ملاحظة: تشير إحدى إجابات تقييم الموقف (أو أكثر) إلى وجود فجوة محتملة في اتخاذ القرار الخاص بهذه الوظيفة — يُنصح بمناقشة إجابات السيناريوهات مباشرة أثناء المقابلة.`;
     }
   } else {
     if (verdictLevel === "strong") {
@@ -79,8 +79,8 @@ function buildRecommendation(lang, deptName, verdictLevel, keyStrengths, develop
         ` Consider alternative positions or discuss development areas in interview.` +
         (developmentAreas.length ? ` Particular attention to ${listJoin(developmentAreas, lang)} is recommended.` : "");
     }
-    if (!sjtsOk) {
-      text += ` Note: situational judgment indicates a potential gap in role-specific decision-making — discuss the scenario response directly in interview.`;
+    if (!sjtOk) {
+      text += ` Note: one or more situational-judgment responses indicate a potential gap in role-specific decision-making — discuss the scenario responses directly in interview.`;
     }
   }
   return text;
@@ -114,21 +114,28 @@ function buildResult(dept, candidate, answers, queue, lang) {
   const keyStrengthsEN = traits.filter(tr => tr.bandKey === "high").map(tr => tr.nameEN);
   const developmentAreasEN = traits.filter(tr => tr.bandKey === "low").map(tr => tr.nameEN);
 
-  const sjts = dept.sjts;
-  const chosenIndex = answers["sjts"];
-  const sjtsResult = {
-    chosenIndex,
-    chosenTextEN: sjts.options[chosenIndex] ? sjts.options[chosenIndex].en : "",
-    isBestPractice: chosenIndex === sjts.bestIndex
-  };
+  const sjtResults = dept.sjts.map((sjt, sIdx) => {
+    const chosenIndex = answers[`sjt${sIdx}`];
+    return {
+      sjtIndex: sIdx,
+      questionEN: sjt.question.en,
+      chosenIndex,
+      chosenTextEN: sjt.options[chosenIndex] ? sjt.options[chosenIndex].en : "",
+      isBestPractice: chosenIndex === sjt.bestIndex
+    };
+  });
+  const sjtBestPracticeCount = sjtResults.filter(r => r.isBestPractice).length;
+  const sjtTotal = sjtResults.length;
+  const sjtAllBestPractice = sjtBestPracticeCount === sjtTotal;
 
-  const recommendationEN = buildRecommendation("en", dept.name.en, verdictLevel, keyStrengthsEN, developmentAreasEN, sjtsResult.isBestPractice);
+  const recommendationEN = buildRecommendation("en", dept.name.en, verdictLevel, keyStrengthsEN, developmentAreasEN, sjtAllBestPractice);
 
   const rawResponses = queue.map(q => {
     if (q.type === "likert") {
       return { traitIndex: q.traitIndex, itemTextEN: q.textEN, reverseScored: q.reverse, response: answers[q.key] };
     }
-    return { traitIndex: null, itemTextEN: sjts.question.en, response: sjts.options[answers[q.key]] ? sjts.options[answers[q.key]].en : "" };
+    const sjt = dept.sjts[q.sjtIndex];
+    return { traitIndex: null, itemTextEN: sjt.question.en, response: sjt.options[answers[q.key]] ? sjt.options[answers[q.key]].en : "" };
   });
 
   return {
@@ -143,7 +150,10 @@ function buildResult(dept, candidate, answers, queue, lang) {
     traits,
     keyStrengthsEN,
     developmentAreasEN,
-    sjts: sjtsResult,
+    sjts: sjtResults,
+    sjtBestPracticeCount,
+    sjtTotal,
+    sjtAllBestPractice,
     recommendationEN,
     rawResponses
   };
